@@ -9,7 +9,6 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from MLP import MLP
 import math
-import csv
 
 st.title('Lane Distribution Factor')
 
