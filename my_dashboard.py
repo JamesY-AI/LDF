@@ -15,8 +15,7 @@ model = MLP(7, 100, 100, 2)
 model.load_state_dict(torch.load("model_4ln"))
 model.eval()
 
-@st.cache()
-
+#@st.cache()
 
 aadt = st.slider('Directional AADT', value=10000, min_value=1000, max_value=80000)
 trk_pct = st.slider('Truck Percent', value=20.0, min_value=0.0, max_value=50.0)
