@@ -1,0 +1,7 @@
+numpy
+scipy
+streamlit
+pickle
+matplotlib
+torch
+sklearn
