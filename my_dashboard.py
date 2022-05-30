@@ -55,7 +55,7 @@ else:
     PA_O = 0.0
     PA_OFE = 1.0
 
-X = torch.tensor([[aadt_std[0][0], tp_std[0][0], IS, PA_O, PA_OFE, area_r, area_u]])
+X = torch.tensor([[aadt_std, tp_std, IS, PA_O, PA_OFE, area_r, area_u]])
 
 y_pred = model(X.float(), "inference")
 ldf = y_pred.detach().numpy()
