@@ -28,8 +28,8 @@ df = pd.read_csv('std_params.csv')
 
 aadt_mean = df["mean"][0]
 aadt_var = df["var"][0]
-trk_pct_mean = df["mean"][1]
-trk_pct_var = df["var"][1]
+tp_mean = df["mean"][1]
+tp_var = df["var"][1]
 
 aadt_std = (aadt-aadt_mean)/math.sqrt(aadt_var)
 tp_std = (trk_pct-tp_mean)/math.sqrt(tp_var)
