@@ -12,7 +12,7 @@ import math
 
 st.title('Lane Distribution Factor')
 
-model = MLP(7, 100, 100, 2)
+model = MLP(7, 200, 200, 2)
 model.load_state_dict(torch.load("model_4ln"))
 model.eval()
 
