@@ -18,8 +18,8 @@ model.eval()
 
 #@st.cache()
 
-aadt = st.slider('Directional AADT', value=10000, min_value=1000, max_value=80000)
-trk_pct = st.slider('Truck Percent', value=20.0, min_value=0.0, max_value=50.0)
+aadt = st.slider('Directional AADT', value=10000, min_value=1000, max_value=55000)
+trk_pct = st.slider('Truck Percent', value=10.0, min_value=0.0, max_value=50.0)
 area = st.selectbox('Select area type', ["Rural", "Urban"])
 facility = st.selectbox('Select facilty type', ["Interstate", "Minor Arterial", "Principal Arterial-Other Freeways/Expressways", "Principal Arterial-Other"])
 
