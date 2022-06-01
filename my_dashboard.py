@@ -21,7 +21,7 @@ model.eval()
 aadt = st.slider('Directional AADT', value=10000, min_value=1000, max_value=55000)
 trk_pct = st.slider('Truck Percent', value=10.0, min_value=0.0, max_value=50.0)
 area = st.selectbox('Select area type', ["Rural", "Urban"])
-facility = st.selectbox('Select facilty type', ["Interstate", "Minor Arterial", "Principal Arterial-Other Freeways/Expressways", "Principal Arterial-Other"])
+facility = st.selectbox('Select facilty type', ["Interstate", "Minor Arterial", "Principal Arterial-Other"])
 
 #preprocess the input
 df = pd.read_csv('std_params.csv')
@@ -46,24 +46,16 @@ if facility == "Interstate":
     IS = 1.0
     MA = 0.0
     PA_O =0.0
-    PA_OFE = 0.0
 elif facility == "Minor Arterial":
     IS = 0.0
     MA = 1.0
     PA_O =0.0
-    PA_OFE = 0.0
-elif facility == "Principal Arterial-Other":
-    IS = 0.0
-    MA = 0.0
-    PA_O =1.0
-    PA_OFE = 0.0
 else:
     IS = 0.0
     MA = 0.0
-    PA_O = 0.0
-    PA_OFE = 1.0
+    PA_O =1.0
 
-X = torch.tensor([[aadt_std, tp_std, IS, MA, PA_O, PA_OFE, area_r, area_u]])
+X = torch.tensor([[aadt_std, tp_std, IS, MA, PA_O, area_r, area_u]])
 
 y_pred = model(X.float(), "inference")
 ldf = y_pred.detach().numpy()
