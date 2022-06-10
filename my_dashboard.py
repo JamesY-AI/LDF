@@ -12,64 +12,73 @@ import math
 
 st.title('Lane Distribution Factor')
 
-model = MLP(7, 200, 200, 2)
-model.load_state_dict(torch.load("model_4ln"))
-model.eval()
-
-#@st.cache()
-
-aadt = st.slider('Directional AADT', value=10000, min_value=1000, max_value=55000)
-trk_pct = st.slider('Truck Percent', value=10.0, min_value=0.0, max_value=50.0)
-area = st.selectbox('Select area type', ["Rural", "Urban"])
-facility = st.selectbox('Select facilty type', ["Interstate", "Minor Arterial", "Principal Arterial-Other"])
+aadt = st.slider('Directional AADT', value=10000, min_value=2000, max_value=100000)
+area = st.selectbox('Select area type', ["Urban", "Rural"])
+facility = st.selectbox('Select facility type', ["Interstate, Other Freeways or Expressways", "Others"])
+num_lanes = st.selectbox('Select the number of lanes (directional)', ["2", "3+"])
 
 #preprocess the input
 df = pd.read_csv('std_params.csv')
 
-aadt_mean = df["mean"][0]
-aadt_var = df["var"][0]
-tp_mean = df["mean"][1]
-tp_var = df["var"][1]
+b0 = df["const"][0]
+b1 = df["AADT"][0]
+b2 = df["Urban"][0]
+b3 = df["Interstate"][0]
+b4 = df["3+ln"][0]
 
-aadt_std = (aadt-aadt_mean)/math.sqrt(aadt_var)
-tp_std = (trk_pct-tp_mean)/math.sqrt(tp_var)
+c0 = df["const"][1]
+c1 = df["AADT"][1]
+c2 = df["Urban"][1]
+c3 = df["Interstate"][1]
 
 
-if area == "Rural":
-    area_r = 1.0
-    area_u = 0.0
+if area == "Urban":
+    Urban = 1.0
 else:
-    area_r = 0.0
-    area_u = 1.0
+    Urban = 0.0
 
-if facility == "Interstate":
+if facility == "Interstate, Other Freeways or Expressways":
     IS = 1.0
-    MA = 0.0
-    PA_O =0.0
-elif facility == "Minor Arterial":
-    IS = 0.0
-    MA = 1.0
-    PA_O =0.0
 else:
     IS = 0.0
-    MA = 0.0
-    PA_O =1.0
 
-X = torch.tensor([[aadt_std, tp_std, IS, MA, PA_O, area_r, area_u]])
+if num_lanes =="2":
+    LN = 0.0
+else:
+    LN = 1.0
 
-y_pred = model(X.float(), "inference")
-ldf = y_pred.detach().numpy()
+bx = b0 + b1*math.log(aadt) + b2*Urban + b3*IS + b4*LN
+ldf_outer = 1/(1+ math.exp(-bx))
+
+# only for 3+ directional lanes
+if LN == 0.0:
+    ldf_inner = 1.0 - ldf_outer
+else:
+    cx = c0 + c1*math.log(aadt) + c2*Urban + c3*IS
+    ldf_center = (1/(1.0 + math.exp(-cx)))*(1.0-ldf_outer)
+    ldf_inner = 1.0-ldf_center-ldf_outer
 
 # Plot LDF
-data_dict = {'outer lane':ldf[0][0], 'inner_lane':ldf[0][1]}
-lanes = list(data_dict.keys())
-values = list(data_dict.values())
+if LN == 0.0:
+    data_dict = {'inner_lane':ldf_inner, 'outer_lane':ldf_outer}
+    lanes = list(data_dict.keys())
+    values = list(data_dict.values())
+else:
+    data_dict = {'inner_lane':ldf_inner, 'center_lane': ldf_center, 'outer_lane':ldf_outer}
+    lanes = list(data_dict.keys())
+    values = list(data_dict.values())
+
 fig = plt.figure(figsize = (10, 5))
 #  Bar plot
 plt.bar(lanes, values, color ='blue', width = 0.5)
+
 #plt.xlabel("Lanes")
 plt.ylabel("percent of trucks")
-plt.title(f"Lane Distribution Factor: outer_lane={ldf[0][0]:.2f},  inner_lane={ldf[0][1]:.2f}")
+
+if LN == 0.0:
+    plt.title(f"Lane Distribution Factor: inner lane={data_dict['inner_lane']:.2f}, outer lane={data_dict['outer_lane']:.2f}")
+else:
+    plt.title(f"Lane Distribution Factor: inner lane={data_dict['inner_lane']:.2f}, center lane={data_dict['center_lane']:.2f}, outer lane={data_dict['outer_lane']:.2f}")
 plt.show()
 
 st.pyplot(fig)
