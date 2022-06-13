@@ -31,7 +31,6 @@ c1 = df["AADT"][1]
 c2 = df["Urban"][1]
 c3 = df["Interstate"][1]
 
-
 if area == "Urban":
     Urban = 1.0
 else:
