@@ -9,6 +9,10 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from MLP import MLP
 import math
+from PIL import Image
+
+image = Image.open('logos.png')
+st.image(image)
 
 st.title('Lane Distribution Factor')
 
