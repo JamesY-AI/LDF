@@ -11,6 +11,8 @@ from MLP import MLP
 import math
 from PIL import Image
 
+@st.cache(ttl=24*3600)
+
 image = Image.open('logos.png')
 st.image(image)
 
