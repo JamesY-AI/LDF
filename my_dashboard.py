@@ -16,24 +16,9 @@ st.image(image)
 
 st.title('Lane Distribution Factor')
 
-aadt = st.slider('Directional AADT', value=10000, min_value=2000, max_value=100000)
 area = st.selectbox('Select area type', ["Urban", "Rural"])
 facility = st.selectbox('Select facility type', ["Interstate, Other Freeways or Expressways", "Others"])
 num_lanes = st.selectbox('Select the number of lanes (directional)', ["2", "3+"])
-
-#preprocess the input
-df = pd.read_csv('std_params.csv')
-
-b0 = df["const"][0]
-b1 = df["AADT"][0]
-b2 = df["Urban"][0]
-b3 = df["Interstate"][0]
-b4 = df["3+ln"][0]
-
-c0 = df["const"][1]
-c1 = df["AADT"][1]
-c2 = df["Urban"][1]
-c3 = df["Interstate"][1]
 
 if area == "Urban":
     Urban = 1.0
@@ -49,6 +34,29 @@ if num_lanes =="2":
     LN = 0.0
 else:
     LN = 1.0
+
+if IS == 0.0 and LN == 1.0:
+    aadt = st.slider('Directional AADT', value=10000, min_value=2000, max_value=40000)
+elif IS == 0.0 and LN == 0.0:
+    aadt = st.slider('Directional AADT', value=10000, min_value=2000, max_value=35000)
+else:
+    aadt = st.slider('Directional AADT', value=10000, min_value=2000, max_value=100000)
+
+
+#preprocess the input
+df = pd.read_csv('std_params.csv')
+
+b0 = df["const"][0]
+b1 = df["AADT"][0]
+b2 = df["Urban"][0]
+b3 = df["Interstate"][0]
+b4 = df["3+ln"][0]
+
+c0 = df["const"][1]
+c1 = df["AADT"][1]
+c2 = df["Urban"][1]
+c3 = df["Interstate"][1]
+
 
 bx = b0 + b1*math.log(aadt) + b2*Urban + b3*IS + b4*LN
 ldf_outer = 1/(1+ math.exp(-bx))
