@@ -36,7 +36,7 @@ else:
     LN = 1.0
 
 
-warning = '<p style="font-family:sans-serif; color:Red; font-size: 32px;">Extrapolated LDF values, use with caution</p>'
+warning = '<p style="font-family:sans-serif; color:Red; font-size: 32px;">Extrapolated LDF values, use with caution.</p>'
 
 if IS == 0.0 and LN == 0.0:
     aadt = st.slider('Directional AADT', value=10000, min_value=2000, max_value=40000)
