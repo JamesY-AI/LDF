@@ -46,9 +46,13 @@ elif IS == 0.0 and LN == 1.0:
     aadt = st.slider('Directional AADT', value=10000, min_value=2000, max_value=35000)
     if Urban == 0.0:
         st.markdown(warning, unsafe_allow_html=True)
+elif IS == 1.0 and LN == 0.0:
+    aadt = st.slider('Directional AADT', value=10000, min_value=2000, max_value=60000)
+    if (Urban == 0.0 and aadt >30000):
+        st.markdown(warning, unsafe_allow_html=True)
 else:
     aadt = st.slider('Directional AADT', value=10000, min_value=2000, max_value=100000)
-    if (Urban == 1.0 and LN == 0.0 and aadt > 60000) or (Urban == 0.0 and LN == 0.0 and aadt >30000) or (Urban == 0.0 and LN == 1.0 and aadt >50000):
+    if (Urban == 0.0 and aadt >50000):
         st.markdown(warning, unsafe_allow_html=True)
 
 
